@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customer>
+    <id>1</id>
+    <firstName>John</firstName>
+    <lastName>Smith</lastName>
+    <dishes>
+        <id>1</id>
+        <name>Pasta Carbonara</name>
+        <price>10</price>
+    </dishes>
+    <dishes>
+        <id>2</id>
+        <name>Steak</name>
+        <price>8</price>
+    </dishes>
+    <tables>
+        <capacity>4</capacity>
+        <id>1</id>
+        <number>1</number>
+    </tables>
+    <chef>
+        <firstName>Alice</firstName>
+        <id>1</id>
+        <lastName>Johnson</lastName>
+    </chef>
+    <order>
+        <id>1</id>
+        <status>In process</status>
+        <totalPrice>18.0</totalPrice>
+    </order>
+</customer>
