@@ -1,0 +1,213 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://example.com/restaurant"
+             targetNamespace="http://example.com/restaurant">
+    <types>
+        <xsd:schema targetNamespace="http://example.com/restaurant">
+            <xsd:element name="GetRestaurantByNameRequest" type="tns:GetRestaurantByNameRequest"/>
+            <xsd:element name="GetRestaurantByNameResponse" type="tns:GetRestaurantByNameResponse"/>
+            <xsd:element name="GetRestaurantByIdRequest" type="tns:GetRestaurantByIdRequest"/>
+            <xsd:element name="GetRestaurantByIdResponse" type="tns:GetRestaurantByIdResponse"/>
+            <xsd:element name="GetAllRestaurantsRequest" type="tns:GetAllRestaurantsRequest"/>
+            <xsd:element name="GetAllRestaurantsResponse" type="tns:GetAllRestaurantsResponse"/>
+            <xsd:element name="AddRestaurantRequest" type="tns:AddRestaurantRequest"/>
+            <xsd:element name="AddRestaurantResponse" type="tns:AddRestaurantResponse"/>
+            <!-- Define other elements as needed -->
+
+            <xsd:complexType name="GetRestaurantByNameRequest">
+                <xsd:sequence>
+                    <xsd:element name="name" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="GetRestaurantByNameResponse">
+                <xsd:sequence>
+                    <xsd:element name="restaurant" type="tns:Restaurant"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="GetRestaurantByIdRequest">
+                <xsd:sequence>
+                    <xsd:element name="id" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="GetRestaurantByIdResponse">
+                <xsd:sequence>
+                    <xsd:element name="restaurant" type="tns:Restaurant"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="GetAllRestaurantsRequest">
+                <!-- No parameters needed -->
+            </xsd:complexType>
+
+            <xsd:complexType name="GetAllRestaurantsResponse">
+                <xsd:sequence>
+                    <xsd:element name="restaurants" type="tns:Restaurants"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="AddRestaurantRequest">
+                <xsd:sequence>
+                    <xsd:element name="restaurant" type="tns:Restaurant"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="AddRestaurantResponse">
+                <xsd:sequence>
+                    <xsd:element name="success" type="xsd:boolean"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Define the Restaurant type -->
+            <xsd:complexType name="Restaurant">
+                <xsd:sequence>
+                    <xsd:element name="id" type="xsd:int"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                    <xsd:element name="address" type="xsd:string"/>
+                    <xsd:element name="phone" type="xsd:string"/>
+                    <xsd:element name="dishes" type="tns:Dishes"/>
+                    <xsd:element name="chef" type="tns:Chef"/>
+                    <xsd:element name="tables" type="tns:Tables"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Define other necessary types -->
+            <xsd:complexType name="Dishes">
+                <xsd:sequence>
+                    <xsd:element name="dish" type="tns:Dish" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Dish">
+                <xsd:sequence>
+                    <xsd:element name="id" type="xsd:int"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                    <xsd:element name="price" type="xsd:float"/>
+                    <xsd:element name="description" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Chef">
+                <xsd:sequence>
+                    <xsd:element name="id" type="xsd:int"/>
+                    <xsd:element name="firstName" type="xsd:string"/>
+                    <xsd:element name="lastName" type="xsd:string"/>
+                    <xsd:element name="experience" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Tables">
+                <xsd:sequence>
+                    <xsd:element name="table" type="tns:Table" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Table">
+                <xsd:sequence>
+                    <xsd:element name="id" type="xsd:int"/>
+                    <xsd:element name="seats" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Restaurants">
+                <xsd:sequence>
+                    <xsd:element name="restaurant" type="tns:Restaurant" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+        </xsd:schema>
+    </types>
+
+    <message name="GetRestaurantByNameRequest">
+        <part name="parameters" element="tns:GetRestaurantByNameRequest"/>
+    </message>
+    <message name="GetRestaurantByNameResponse">
+        <part name="parameters" element="tns:GetRestaurantByNameResponse"/>
+    </message>
+    <message name="GetRestaurantByIdRequest">
+        <part name="parameters" element="tns:GetRestaurantByIdRequest"/>
+    </message>
+    <message name="GetRestaurantByIdResponse">
+        <part name="parameters" element="tns:GetRestaurantByIdResponse"/>
+    </message>
+    <message name="GetAllRestaurantsRequest">
+        <part name="parameters" element="tns:GetAllRestaurantsRequest"/>
+    </message>
+    <message name="GetAllRestaurantsResponse">
+        <part name="parameters" element="tns:GetAllRestaurantsResponse"/>
+    </message>
+    <message name="AddRestaurantRequest">
+        <part name="parameters" element="tns:AddRestaurantRequest"/>
+    </message>
+    <message name="AddRestaurantResponse">
+        <part name="parameters" element="tns:AddRestaurantResponse"/>
+    </message>
+
+    <portType name="RestaurantService">
+        <operation name="GetRestaurantByName">
+            <input message="tns:GetRestaurantByNameRequest"/>
+            <output message="tns:GetRestaurantByNameResponse"/>
+        </operation>
+        <operation name="GetRestaurantById">
+            <input message="tns:GetRestaurantByIdRequest"/>
+            <output message="tns:GetRestaurantByIdResponse"/>
+        </operation>
+        <operation name="GetAllRestaurants">
+            <input message="tns:GetAllRestaurantsRequest"/>
+            <output message="tns:GetAllRestaurantsResponse"/>
+        </operation>
+        <operation name="AddRestaurant">
+            <input message="tns:AddRestaurantRequest"/>
+            <output message="tns:AddRestaurantResponse"/>
+        </operation>
+    </portType>
+
+    <binding name="RestaurantServiceSoapBinding" type="tns:RestaurantService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetRestaurantByName">
+            <soap:operation soapAction="getRestaurantByName"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="GetRestaurantById">
+            <soap:operation soapAction="getRestaurantById"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="GetAllRestaurants">
+            <soap:operation soapAction="getAllRestaurants"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="AddRestaurant">
+            <soap:operation soapAction="addRestaurant"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <service name="RestaurantService">
+        <port name="RestaurantServiceSoap" binding="tns:RestaurantServiceSoapBinding">
+            <soap:address location="http://localhost:8080/ws"/>
+        </port>
+    </service>
+</definitions>

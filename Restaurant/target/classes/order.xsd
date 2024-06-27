@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://eif.viko.lt/siroochenko/restaurant/gen"
+           targetNamespace="http://eif.viko.lt/siroochenko/restaurant/gen"
+           elementFormDefault="qualified">
+
+   <xs:complexType name="BaseEntity">
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="Chef">
+            <xs:complexContent>
+                <xs:extension base="BaseEntity">
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="speciality" type="xs:string"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+
+        <xs:complexType name="Customer">
+            <xs:complexContent>
+                <xs:extension base="BaseEntity">
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="email" type="xs:string"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+
+        <xs:complexType name="Dish">
+            <xs:complexContent>
+                <xs:extension base="BaseEntity">
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string"/>
+                        <xs:element name="price" type="xs:decimal"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+
+        <xs:complexType name="Order">
+            <xs:complexContent>
+                <xs:extension base="BaseEntity">
+                    <xs:sequence>
+                        <xs:element name="customer" type="Customer"/>
+                        <xs:element name="dishes" type="Dishes"/>
+                        <xs:element name="totalAmount" type="xs:decimal"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+
+        <xs:complexType name="Dishes">
+            <xs:sequence>
+                <xs:element name="dish" type="Dish" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="Tables">
+            <xs:complexContent>
+                <xs:extension base="BaseEntity">
+                    <xs:sequence>
+                        <xs:element name="number" type="xs:int"/>
+                        <xs:element name="capacity" type="xs:int"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+
+        <xs:element name="order" type="Order"/>
+
+    </xs:schema>

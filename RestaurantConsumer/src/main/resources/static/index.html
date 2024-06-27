@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Web Service Consumer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <style>
+        .visit {
+            margin-left: 20px;
+        }
+        .sight {
+            margin-left: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Restaurant Web Service Consumer</h1>
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-3 mr-5">
+            <h2>Get Restaurant</h2>
+            <div class="mb-4">
+                <input type="text" id="getRestaurantByNameInput" class="form-control mb-2" placeholder="Name" required>
+                <div class="d-flex justify-content-start">
+                    <button type="button" class="btn btn-outline-primary mr-2" onclick="searchRestaurantByNameHTML()">HTML</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="searchRestaurantByNamePDF()">PDF</button>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <input type="number" id="getRestaurantByIdInput" class="form-control mb-2" placeholder="ID" required>
+                <div class="d-flex justify-content-start">
+                    <button type="button" class="btn btn-outline-primary mr-2" onclick="searchRestaurantByIdHTML()">HTML</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="searchRestaurantByIdPDF()">PDF</button>
+                </div>
+            </div>
+
+            <h2>Get All Restaurants</h2>
+            <div class="button-group d-flex justify-content-start">
+                <button type="button" class="btn btn-outline-primary mr-2" onclick="searchRestaurantsHTML()">HTML</button>
+                <button type="button" class="btn btn-outline-danger" onclick="searchRestaurantsPDF()">PDF</button>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <h2>Add Restaurant</h2>
+            <form id="restaurantForm">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="restaurantName" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="restaurantAddress" placeholder="Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="restaurantCuisine" placeholder="Cuisine" required>
+                </div>
+
+                <!-- Dish Section -->
+                <div id="dishSection">
+                    <h4>Dishes:</h4>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-outline-primary" id="addDishBtn">Add Dish</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-bottom: 100px;">Submit</button>
+            </form>
+        </div>
+
+        <!-- Bootstrap JS and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script>
+            $(document).ready(function(){
+                // Add Dish button click event
+                $('#addDishBtn').click(function(){
+                    var dishCount = $('.dish').length + 1;
+                    var dishHtml = '<div class="dish mb-3">' +
+                        '<h5>Dish ' + dishCount + '</h5>' +
+                        '<div class="form-group">' +
+                        '<input type="text" class="form-control" id="dishName' + dishCount + '" placeholder="Dish Name" required>' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<input type="number" class="form-control" id="dishPrice' + dishCount + '" placeholder="Price" required>' +
+                        '</div>' +
+                        '</div>';
+                    $('#dishSection').append(dishHtml);
+                });
+
+                // Form submit event
+                $('#restaurantForm').submit(function(event){
+                    event.preventDefault();
+
+                    // Collect form data
+                    var restaurantName = $('#restaurantName').val();
+                    var restaurantAddress = $('#restaurantAddress').val();
+                    var restaurantCuisine = $('#restaurantCuisine').val();
+
+                    // Create restaurant object
+                    var restaurant = {
+                        name: restaurantName,
+                        address: restaurantAddress,
+                        cuisine: restaurantCuisine,
+                        dishes: []
+                    };
+
+                    // Loop through dishes
+                    $('.dish').each(function(index){
+                        var dishNum = index + 1;
+                        var dishName = $('#dishName' + dishNum).val();
+                        var dishPrice = $('#dishPrice' + dishNum).val();
+
+                        // Create dish object
+                        var dish = {
+                            name: dishName,
+                            price: dishPrice
+                        };
+
+                        // Add dish to restaurant
+                        restaurant.dishes.push(dish);
+                    });
+
+                    // Convert restaurant object to XML representation
+                    var restaurantXml = convertRestaurantToXml(restaurant);
+
+                    // Send XML data to backend
+                    $.ajax({
+                        url: '/restaurants/add',
+                        type: 'POST',
+                        contentType: 'application/xml',
+                        data: restaurantXml,
+                        success: function(response) {
+                            const newWindow = window.open('', '_blank');
+                            newWindow.document.write(response);
+                            newWindow.document.close();
+
+                            // Reload the main page when the new window is closed
+                            newWindow.onbeforeunload = function() {
+                                window.location.reload();
+                            };
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', xhr.responseText);
+                        }
+                    });
+
+                    // Reset form
+                    $('#restaurantForm')[0].reset();
+                });
+            });
+
+            function convertRestaurantToXml(data) {
+                var xml = '<?xml version="1.0" encoding="UTF-8"?>';
+                xml += '<restaurant>';
+                xml += '<name>' + data.name + '</name>';
+                xml += '<address>' + data.address + '</address>';
+                xml += '<cuisine>' + data.cuisine + '</cuisine>';
+                if (data.dishes) {
+                    xml += '<dishes>';
+                    data.dishes.forEach(function(dish) {
+                        xml += '<dish>';
+                        xml += '<name>' + dish.name + '</name>';
+                        xml += '<price>' + dish.price + '</price>';
+                        xml += '</dish>';
+                    });
+                    xml += '</dishes>';
+                }
+                xml += '</restaurant>';
+                return xml;
+            }
+
+            function searchRestaurantByNameHTML() {
+                var name = $('#getRestaurantByNameInput').val();
+                $.get('/restaurants/name/' + name, function(response) {
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(response);
+                    newWindow.document.close();
+                });
+            }
+
+            function searchRestaurantByNamePDF() {
+                var name = $('#getRestaurantByNameInput').val();
+                window.open('/restaurants/name/' + name + '/pdf', '_blank');
+            }
+
+            function searchRestaurantByIdHTML() {
+                var id = $('#getRestaurantByIdInput').val();
+                $.get('/restaurants/id/' + id, function(response) {
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(response);
+                    newWindow.document.close();
+                });
+            }
+
+            function searchRestaurantByIdPDF() {
+                var id = $('#getRestaurantByIdInput').val();
+                window.open('/restaurants/id/' + id + '/pdf', '_blank');
+            }
+
+            function searchRestaurantsHTML() {
+                $.get('/restaurants', function(response) {
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(response);
+                    newWindow.document.close();
+                });
+            }
+
+            function searchRestaurantsPDF() {
+                window.open('/restaurants/pdf', '_blank');
+            }
+        </script>
+    </div>
+
+</div>
+
+</body>
+</html>
